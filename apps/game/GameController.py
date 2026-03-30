@@ -1,4 +1,6 @@
 import random
+from apps.game import Game
+from apps.game import Image
 
 class GameController:
 
