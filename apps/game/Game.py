@@ -8,6 +8,7 @@ class Game:
         self.attempts = 0
     
     def startGame(self, gamemode):
-        self.score
+        
+
     
 
