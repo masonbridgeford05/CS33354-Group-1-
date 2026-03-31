@@ -1,4 +1,4 @@
-from PIL import Images
+from PIL import Image
 
 def __init__(self):
     self.path = ""
