@@ -5,7 +5,7 @@ class GameImage(models.Model):
     image_id = models.IntegerField(default=0)
     difficulty = models.IntegerField(default=0)
     location = models.CharField( max_length=50)
-    image = models.ImageField(upload_to='GameImages/')
+    image_path = models.ImageField(upload_to='GameImages/')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # saves to database first
@@ -16,4 +16,7 @@ class GameImage(models.Model):
 
     def __str__(self):
         return f"{self.location} - {self.difficulty}"
+
+
+
 

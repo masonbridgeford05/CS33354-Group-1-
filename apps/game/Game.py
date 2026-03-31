@@ -1,4 +1,4 @@
-from PIL import Images
+from PIL import Image
 
 class Game:
     
