@@ -1,4 +1,4 @@
-from PIL import Images
+from PIL import Image
 
 class Game:
     
@@ -8,6 +8,7 @@ class Game:
         self.attempts = 0
     
     def startGame(self, gamemode):
-        self.score
+        
+
     
 
