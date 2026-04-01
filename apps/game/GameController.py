@@ -15,6 +15,7 @@ class GameController:
     
     def signalGameStart(self):
         image_path, answer = self.pick_random_image(self, self.gamemode)
+        print("Starting game!\nGame ID is " + self.gameid)
         self.game.startGame(self.gamemode, image_path, answer)
 
     
