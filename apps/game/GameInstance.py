@@ -1,5 +1,6 @@
 from PIL import Image
 
+
 class GameInstance:
     
     def __init__(self, gamemode):
@@ -9,3 +10,4 @@ class GameInstance:
     
     def startGame(self, gamemode, image_path, answer):
         self
+        
