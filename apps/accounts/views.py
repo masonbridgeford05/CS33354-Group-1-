@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
-from .models import User
-from .validator import Validator
+from apps.accounts.models import User
+from apps.accounts.validator import Validator
 # Create your views here.
 
 class UserController(View):
