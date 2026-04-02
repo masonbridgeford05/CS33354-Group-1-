@@ -1,9 +1,12 @@
 from django.test import TestCase
+from apps.game.Image import GameImage
+from apps.game.GameController import GameController
 from apps.game.GameInstance import GameInstance
 
 
 class GameInstanceTest(TestCase):
 
+<<<<<<< HEAD
     # TC1: Valid guess, valid location
     # Expected: True, score calculated
     
@@ -55,10 +58,45 @@ class GameInstanceTest(TestCase):
     
     def test_calculate_score_easy(self):
         game = GameInstance("easy", 1)
+=======
+    #TC1: Valid input for both difficulty and location
+    def test_valid_valid(self):
+        game = GameInstance("easy", 12345)
+
+        result = game.evaluate("Library", "Library")
+        self.assertIn(result, [True, False])
+
+    #TC2: Valid input for difficulty but invalid input for location
+
+    def test_valid_invalid_location(self):
+        game = GameInstance("hard", 12345)
+
+        with self.assertRaises(ValueError):
+            game.evaluate("Bank", "ECSS")
+
+    #TC3: Valid input for difficulty but null input for location
+
+    def test_valid_exception_location(self):
+        game = GameInstance("easy", 12345)
+
+        with self.assertRaises(ValueError):
+            game.evaluate("", "Student Union")
+
+    #TC4: Invalid input for difficulty but valid input for location
+
+    def test_invalid_difficulty(self):
+        game = GameInstance("impossible", 12345)
+
+        with self.assertRaises(ValueError):
+            game.evaluate("ESCW", "ECSW")
+
+    #TC7: Null input for difficulty but valid input for location
+>>>>>>> 8988f3e (modified game test classes)
 
         game.attempts = 2
         game.calculateScore()
 
+<<<<<<< HEAD
         self.assertEqual(game.getScore(), 1000)  # (3-2)*1000
     
     # TC6: Score calculation Hard (gamemode == 1)
@@ -108,3 +146,10 @@ class GameInstanceTest(TestCase):
 
         self.assertFalse(result)
         self.assertEqual(game.getattempts(), 1)
+=======
+    def test_null_difficulty(self):
+        game = GameInstance("", 12345)
+
+        with self.assertRaises(ValueError):
+            game.evaluate("Dining Hall", "Dining Hall")
+>>>>>>> 8988f3e (modified game test classes)
