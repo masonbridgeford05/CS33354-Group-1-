@@ -2,7 +2,7 @@ from django.test import TestCase
 from apps.game.Image import GameImage
 from apps.game.GameController import GameController
 
-class GameControllerTest(TestCase):
+class ImageTest(TestCase):
 
     def setUp(self):
         GameImage.objects.create(
