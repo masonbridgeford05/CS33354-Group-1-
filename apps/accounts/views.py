@@ -1,0 +1,48 @@
+from django.shortcuts import render
+from django.views import View
+from apps.accounts.models import User
+from apps.accounts.validator import Validator
+# Create your views here.
+
+class UserController(View):
+    def createUserAccount(self, userName, userEmail, userPassword):
+        if Validator.isValidEmail(userEmail) and Validator.isValidPassword(userPassword):
+            return User.createUserAccount(userName, userEmail, userPassword)
+        return None
+    
+    def loginUser(self, userEmail, userPassword):
+        if User.checkuserCredentials(userEmail, userPassword):
+            return True
+        return False
+        
+    def fetchUserData(self, userID):
+        try:
+            return User.objects.get(user_ID = userID)
+        except User.DoesNotExist:
+            return None
+    
+    def processUserRequest(self, userId, userRequest):
+        user = self.fetchUserData(userId)
+        if not user:
+            return "User does not exist"
+        
+        if userRequest == "START_LEVEL_EASY":
+            return "Level Easy started"
+        elif userRequest == "START_LEVEL_HARD":
+            return "Level Hard started"
+        elif userRequest == "SUBMIT_GUESS":
+            return "Checking..."
+        elif userRequest == "END_GAME":
+            return "Game Over"
+        
+        return "Unknown Request"
+        
+    def logoutUser(self, request):
+        if hasattr(request, 'session'):
+            request.session.flush()
+            return True
+        return False
+        
+
+
+
