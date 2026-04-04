@@ -25,6 +25,10 @@ class GameController:
             user_input = input_func(f"Correct Answer is {answer}: ")
 
             # Replaced gamestart in gameinstance with evaluate to handle game play loop and user input here.
-            if self.game.evaluate(user_input, answer):
-                # If evaluate returns true, the answer was correct and the score was updated
+            try:
+                if self.game.evaluate(user_input, answer):
+                    # If evaluate returns true, the answer was correct and the score was updated
+                    break
+            except ValueError:
+                print("Error: Invalid game mode")
                 break
