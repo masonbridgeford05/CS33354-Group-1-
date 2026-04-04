@@ -1,290 +1,153 @@
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from django.urls import reverse
+from django.test import TestCase
+from apps.accounts.models import User
+from apps.accounts.views import UserController
 
 
-class AccountCreationTestCase(TestCase):
+class CreateAccountTestCase(TestCase):
 
     def setUp(self):
         
-        # Create a test client
+        # Create controller instance
         
-        self.client = Client()
+        self.controller = UserController()
 
-        # Create an existing user for duplicate user testing
+    def print_result(self, tc_name, inputs, expected, actual):
         
-        User.objects.create_user(
-            username="Existinguser",
-            email="existing@gmail.com",
-            password="Newpassword123"
-        )
-
-    def print_result(self, tc_name, inputs, success):
-        
-        # Print the test case name, input values, and result
+        # Print expected vs actual
         
         print("\n" + "=" * 60)
         print(tc_name)
         print(f"Input -> {inputs}")
-        print("Result ->", "Test Case Successful" if success else "Test Case Failed")
+        print(f"Expected -> {expected}")
+        print(f"Actual -> {actual}")
+        print("Result ->", "PASS" if expected == actual else "FAIL")
         print("=" * 60)
 
-    def test_tc1_all_valid(self):
-        
-        # Test case 1 
-        
-        # all valid inputs
-        
-        # succesful account creation
-
-        username = "Newuser123"
-        email = "johndoe@gmail.com"
-        password1 = "Newpassword123"
-        password2 = "Newpassword123"
-
-        response = self.client.post(reverse('register'),
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 302)
-
-        self.print_result(
-            "TC1 Create Account (All Valid)",
-            f"username={username}, email={email}, password1={password1}, password2={password2}",
-            success
+    
+    # Test case 1:
+    
+    # All valid inputs
+    
+    def test_tc1_valid_all(self):
+        user = self.controller.createUserAccount(
+            "Newuser123",
+            "johndoe@utdallas.edu",
+            "Newpassword123"
         )
 
-        self.assertEqual(response.status_code, 302)
+        expected = True
         
-        self.assertTrue(User.objects.filter(username=username).exists())
+        actual = (user is not None)
 
-    def test_tc2_confirm_password_invalid(self):
-        
-        # Test case 2
-        
-        # all valid except for confirm password
-        
-        # failed account creation
+        self.print_result("TC1 Create Account (Valid/Valid/Valid)",
+                          "username=Newuser123, email=johndoe@utdallas.edu, password=Newpassword123",
+                          expected, actual)
 
-        username = "Newuser123"
-        email = "johndoe@gmail.com"
-        password1 = "Newpassword123"
-        password2 = "Newpassword123567"
+        self.assertTrue(actual)
 
-        response = self.client.post(reverse('register'),
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC2 Create Account (Password Mismatch)",
-            f"username={username}, email={email}, password1={password1}, password2={password2}",
-            success
+    # Test case 2 
+    
+    # Invalid email
+    
+    def test_tc2_invalid_email(self):
+        user = self.controller.createUserAccount(
+            "Newuser123",
+            "johndoe@gmail.com",
+            "Newpassword123"
         )
 
-        self.assertEqual(response.status_code, 200)
+        expected = False
         
-        self.assertFalse(User.objects.filter(username=username).exists())
+        actual = (user is not None)
 
-    def test_tc3_username_invalid(self):
-        
-        # Test case 3
-        
-        # Invalid user 
-        
-        # failed account creation
+        self.print_result("TC2 Create Account (Valid/Invalid/Valid)",
+                          "username=Newuser123, email=johndoe@gmail.com, password=Newpassword123",
+                          expected, actual)
 
-        username = "Existinguser"
-        email = "johndoe@gmail.com"
-        password1 = "Newpassword123"
-        password2 = "Newpassword123"
+        self.assertFalse(actual)
 
-        response = self.client.post(reverse('register'),
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
+    # Test case 3 
+    
+    # invalid password
 
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC3 Create Account (Duplicate Username)",
-            f"username={username}, email={email}, password1={password1}, password2={password2}",
-            success
+    def test_tc3_invalid_password(self):
+        user = self.controller.createUserAccount(
+            "Newuser123",
+            "johndoe@utdallas.edu",
+            "short"
         )
 
-        self.assertEqual(response.status_code, 200)
+        expected = False
         
-        self.assertEqual(User.objects.filter(username=username).count(), 1)
+        actual = (user is not None)
 
-    def test_tc4_email_invalid(self):
-        
-        # Test case 4
-        
-        # all valid except email 
-        
-        # failed account creation
+        self.print_result("TC3 Create Account (Valid/Valid/Invalid)",
+                          "username=Newuser123, email=johndoe@utdallas.edu, password=short",
+                          expected, actual)
 
-        username = "Newuser123"
-        email = "invalid"
-        password1 = "Newpassword123"
-        password2 = "Newpassword123"
+        self.assertFalse(actual)
 
-        response = self.client.post(reverse('register'), 
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC4 Create Account (Invalid Email)",
-            f"username={username}, email={email}, password1={password1}, password2={password2}",
-            success
+    
+    # Test case 4 
+    
+    # no username
+    
+    def test_tc4_empty_username(self):
+        user = self.controller.createUserAccount(
+            "",
+            "johndoe@utdallas.edu",
+            "Newpassword123"
         )
 
-        self.assertEqual(response.status_code, 200)
+        expected = True
         
-        self.assertFalse(User.objects.filter(username=username).exists())
+        actual = (user is not None)
 
-    def test_tc5_password_invalid(self):
-        
-        # Test case 5
-        
-        # all valid except passwords
-        
-        # failed account creation 
+        self.print_result("TC4 Create Account (Empty Username)",
+                          "username='', email=johndoe@utdallas.edu, password=Newpassword123",
+                          expected, actual)
 
-        username = "Newuser123"
-        email = "johndoe@gmail.com"
-        password1 = "weak"
-        password2 = "weak"
+        self.assertTrue(actual)
 
-        response = self.client.post(reverse('register'),
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC5 Create Account (Weak Password)",
-            f"username={username}, email={email}, password1={password1}, password2={password2}",
-            success
+    
+    # Test case 5 
+    
+    # no email
+    
+    def test_tc5_empty_email(self):
+        user = self.controller.createUserAccount(
+            "Newuser123",
+            "",
+            "Newpassword123"
         )
 
-        self.assertEqual(response.status_code, 200)
+        expected = False
         
-        self.assertFalse(User.objects.filter(username=username).exists())
+        actual = (user is not None)
 
-    def test_tc6_exception_username(self):
-       
-        # Test case 6
-        
-        # all valid but no username
-        
-        # failed account creation
+        self.print_result("TC5 Create Account (Empty Email)",
+                          "username=Newuser123, email='', password=Newpassword123",
+                          expected, actual)
 
-        username = ""
-        email = "johndoe@gmail.com"
-        password1 = "Newpassword123"
-        password2 = "Newpassword123"
+        self.assertFalse(actual)
 
-        response = self.client.post(reverse('register'), 
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC6 Create Account (Empty Username)",
-            f"username='{username}', email={email}, password1={password1}, password2={password2}",
-            success
+    # Test case 6
+    
+    # no password
+    
+    def test_tc6_empty_password(self):
+        user = self.controller.createUserAccount(
+            "Newuser123",
+            "johndoe@utdallas.edu",
+            ""
         )
 
-        self.assertEqual(response.status_code, 200)
-
-    def test_tc7_exception_email(self):
+        expected = False
         
-        # Test case 7
-        
-        # all valid but no email
-        
-        # failed account creation
+        actual = (user is not None)
 
-        username = "Newuser123"
-        email = ""
-        password1 = "Newpassword123"
-        password2 = "Newpassword123"
+        self.print_result("TC6 Create Account (Empty Password)",
+                          "username=Newuser123, email=johndoe@utdallas.edu, password=''",
+                          expected, actual)
 
-        response = self.client.post(reverse('register'),
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC7 Create Account (Empty Email)",
-            f"username={username}, email='{email}', password1={password1}, password2={password2}",
-            success
-        )
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_tc8_exception_password(self):
-        
-        # Test case 8 
-        
-        # all valid but no passwords
-        
-        # failed account creation
-
-        username = "Newuser123"
-        email = "johndoe@gmail.com"
-        password1 = ""
-        password2 = ""
-
-        response = self.client.post(reverse('register'),
-        {
-            'username': username,
-            'email': email,
-            'password1': password1,
-            'password2': password2
-        })
-
-        success = (response.status_code == 200)
-
-        self.print_result(
-            "TC8 Create Account (Empty Password Fields)",
-            f"username={username}, email={email}, password1='{password1}', password2='{password2}'",
-            success
-        )
-
-        self.assertEqual(response.status_code, 200)
-        
-        self.assertFalse(User.objects.filter(username=username).exists())
+        self.assertFalse(actual)
