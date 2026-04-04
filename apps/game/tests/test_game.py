@@ -27,7 +27,7 @@ class GameInstanceTest(TestCase):
         self.assertFalse(result)
         print("TC2 Passed")
 
-    # TC3: Exceptional Location Input (empty string), valid difficulty
+    # TC3: Exceptional location Input (empty string), valid difficulty
     
     def test_empty_input(self):
         print("\nTC3 Input: difficulty='easy', location='' Expected: False, attempts+1")
