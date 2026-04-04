@@ -1,204 +1,120 @@
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from django.urls import reverse
+from django.test import TestCase
+from apps.accounts.models import User
+from apps.accounts.views import UserController
 
 
 class LoginTestCase(TestCase):
 
-    def setUp(self):
-        # Create a test client that simulates browser requests
-        self.client = Client()
-
-        # Create one valid user for all login test cases
-        User.objects.create_user(
-            username="Newuser123",
-            password="Newpassword123",
-            email="johndoe@gmail.com"
-        )
-
     def print_result(self, tc_name, inputs, success):
         
-        # Print the test case name, input values, and result
+        # Print test case name, inputs, and final result
         
         print("\n" + "=" * 60)
-        
         print(tc_name)
-        
         print(f"Input -> {inputs}")
-        
         print("Result ->", "Test Case Successful" if success else "Test Case Failed")
-        
         print("=" * 60)
 
-    def test_tc1_valid_username_valid_password(self):
+    def setUp(self):
         
-        # Test case 1 
+        # Create controller instance and one valid user
         
-        # valid user and pass
+        self.controller = UserController()
         
-        # succesful log in 
+        User.createUserAccount("Newuser123", "johndoe@utdallas.edu", "Newpassword123")
 
-        username = "Newuser123"
+        # test case 1
+
+    def test_tc1_valid_valid(self):
         
-        password = "Newpassword123"
-
-        response = self.client.post(reverse('login'),
-        {
-            'username': username,
-            'password': password
-        })
-
-        success = (response.status_code == 302)
+        # Valid email and pass
+        
+        result = self.controller.loginUser("johndoe@utdallas.edu", "Newpassword123")
 
         self.print_result(
-            "TC1 Login (Valid Username / Valid Password)",
-            f"username={username}, password={password}",
-            success
+            "TC1 Login (Valid Email / Valid Password)",
+            "email=johndoe@utdallas.edu, password=Newpassword123",
+            result
         )
 
-        self.assertEqual(response.status_code, 302)
-        
-        self.assertTrue('_auth_user_id' in self.client.session)
+        self.assertTrue(result)
 
-    def test_tc2_valid_username_invalid_password(self):
-       
-        # Test case 2
-       
-        # Valid user but invalid pass
-        
-        # failed log
-        
-        username = "Newuser123"
-        password = "wrongpassword"
+        # test case 2 
 
-        response = self.client.post(reverse('login'),
-        {
-            'username': username,
-            'password': password
-        })
-
-        success = (response.status_code == 200)
+    def test_tc2_valid_invalid(self):
+        
+        # Valid email but invalid pass
+        
+        result = self.controller.loginUser("johndoe@utdallas.edu", "wrongpassword")
 
         self.print_result(
-            "TC2 Login (Valid Username / Invalid Password)",
-            f"username={username}, password={password}",
-            success
+            "TC2 Login (Valid Email / Invalid Password)",
+            "email=johndoe@utdallas.edu, password=wrongpassword",
+            not result
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertFalse(result)
+
+        # test case 3
+
+    def test_tc3_invalid_valid(self):
         
-        self.assertFalse('_auth_user_id' in self.client.session)
-
-    def test_tc3_invalid_username_valid_password(self):
-       
-        # Test case 3
-       
-        # Invalid user but valid pass
-       
-        # failed log in
-
-        username = "Invaliduser"
-        password = "Newpassword123"
-
-        response = self.client.post(reverse('login'),
-        {
-            'username': username,
-            'password': password
-        })
-
-        success = (response.status_code == 200)
+        # Invalid email and valid pass
+        
+        result = self.controller.loginUser("invalid@utdallas.edu", "Newpassword123")
 
         self.print_result(
-            "TC3 Login (Invalid Username / Valid Password)",
-            f"username={username}, password={password}",
-            success
+            "TC3 Login (Invalid Email / Valid Password)",
+            "email=invalid@utdallas.edu, password=Newpassword123",
+            not result
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertFalse(result)
+
+        # test case 4
+
+    def test_tc4_invalid_invalid(self):
         
-        self.assertFalse('_auth_user_id' in self.client.session)
-
-    def test_tc4_invalid_username_invalid_password(self):
-       
-        # Test case 4
-       
-        # Invalid user and pass
-       
-        # failed log in
-
-        username = "Invaliduser"
-        password = "wrongpassword"
-
-        response = self.client.post(reverse('login'),
-        {
-            'username': username,
-            'password': password
-        })
-
-        success = (response.status_code == 200)
+        # Invalid email and pass
+        
+        result = self.controller.loginUser("invalid@utdallas.edu", "wrongpassword")
 
         self.print_result(
-            "TC4 Login (Invalid Username / Invalid Password)",
-            f"username={username}, password={password}",
-            success
+            "TC4 Login (Invalid Email / Invalid Password)",
+            "email=invalid@utdallas.edu, password=wrongpassword",
+            not result
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertFalse(result)
+
+        # test case 5
+
+    def test_tc5_exception_email(self):
         
-        self.assertFalse('_auth_user_id' in self.client.session)
-
-    def test_tc5_exception_username(self):
-        # Test case 5
-       
-        # no user name but valid pass
-       
-        # failed log in
-
-        username = ""
-        password = "Newpassword123"
-
-        response = self.client.post(reverse('login'), 
-        {
-            'username': username,
-            'password': password
-        })
-
-        success = (response.status_code == 200)
+        # empty email
+        
+        result = self.controller.loginUser("", "Newpassword123")
 
         self.print_result(
-            "TC5 Login (Empty Username / Valid Password)",
-            f"username='{username}', password={password}",
-            success
+            "TC5 Login (Empty Email)",
+            "email='', password=Newpassword123",
+            not result
         )
 
-        self.assertEqual(response.status_code, 200)
-        
-        self.assertFalse('_auth_user_id' in self.client.session)
+        self.assertFalse(result)
+
+        # test case 6
 
     def test_tc6_exception_password(self):
-        # Test case 6
         
-        # Valid user but no pass
+        # empty pass
         
-        # failed log in
-
-        username = "Newuser123"
-        password = ""
-
-        response = self.client.post(reverse('login'),
-        {
-            'username': username,
-            'password': password
-        })
-
-        success = (response.status_code == 200)
+        result = self.controller.loginUser("johndoe@utdallas.edu", "")
 
         self.print_result(
-            "TC6 Login (Valid Username / Empty Password)",
-            f"username={username}, password='{password}'",
-            success
+            "TC6 Login (Empty Password)",
+            "email=johndoe@utdallas.edu, password=''",
+            not result
         )
 
-        self.assertEqual(response.status_code, 200)
-        
-        self.assertFalse('_auth_user_id' in self.client.session)
+        self.assertFalse(result)
