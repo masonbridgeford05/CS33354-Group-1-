@@ -1,102 +1,114 @@
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from django.urls import reverse
+from django.test import TestCase
+from apps.accounts.views import UserController
+
+
+class FakeSession:
+    
+    # fake session object with a flush method for testing
+    
+    def __init__(self):
+        self.flushed = False
+
+    def flush(self):
+        self.flushed = True
+
+
+class FakeRequest:
+    
+    # Fake request object that contains a session attribute
+    
+    def __init__(self):
+        self.session = FakeSession()
 
 
 class LogoutTestCase(TestCase):
 
-    def setUp(self):
-        
-        # Create a test client
-        
-        self.client = Client()
-
-        # Create a user for logout testing
-       
-        User.objects.create_user(
-            username="logoutuser",
-            password="Logout123"
-        )
-
     def print_result(self, tc_name, inputs, success):
         
-        # Print the test case name, input values, and result
+        # Print test case name, inputs, and final result
         
         print("\n" + "=" * 60)
+        
         print(tc_name)
+        
         print(f"Input -> {inputs}")
+        
         print("Result ->", "Test Case Successful" if success else "Test Case Failed")
+        
         print("=" * 60)
+
+    def setUp(self):
+        
+        # Create controller instance
+        
+        self.controller = UserController()
+
+        # test case 1
 
     def test_tc1_valid_session(self):
         
-        # Test case 1
-        
         # Valid session
         
-        # succesful logout
+        request = FakeRequest()
+        
+        result = self.controller.logoutUser(request)
 
-        self.client.login(username="logoutuser", password="Logout123")
-
-        response = self.client.get(reverse('logout'))
-
-        success = (response.status_code == 302)
+        success = result and request.session.flushed
 
         self.print_result(
             "TC1 Logout (Valid Session)",
-            "user logged in before logout request",
+            "request has session attribute",
             success
         )
 
-        self.assertEqual(response.status_code, 302)
+        self.assertTrue(result)
         
-        self.assertFalse('_auth_user_id' in self.client.session)
+        self.assertTrue(request.session.flushed)
 
-    def test_tc2_invalid_session(self):
-        
-        # Test case 2
-        
-        # no user logged in
-        
-        # failed test case
+        # test case 2
 
-        response = self.client.get(reverse('logout'))
+    def test_tc2_invalid_session_object(self):
+        
+        # no session
+        
+        class NoSessionRequest:
+            pass
 
-        success = response.status_code in [200, 302]
+        request = NoSessionRequest()
+        
+        result = self.controller.logoutUser(request)
+
+        success = result
 
         self.print_result(
-            "TC2 Logout (No Active Session)",
-            "no user logged in",
+            "TC2 Logout (No Session Attribute)",
+            "request has no session attribute",
             success
         )
 
-        self.assertIn(response.status_code, [200, 302])
+        self.assertTrue(result)
+
+        # test case 3
+
+    def test_tc3_exception_session_none(self):
         
-        self.assertFalse('_auth_user_id' in self.client.session)
-
-    def test_tc3_expired_session(self):
-        # Test case 3
+        # no session
         
-        # expired session
-        
-        # failed log out
+        class NoneSessionRequest:
+            session = None
 
-        self.client.login(username="logoutuser", password="Logout123")
+        request = NoneSessionRequest()
 
-        # Clear session to simulate expiration
-        
-        self.client.session.flush()
-
-        response = self.client.get(reverse('logout'))
-
-        success = response.status_code in [200, 302]
+        try:
+            result = self.controller.logoutUser(request)
+            success = False
+        except:
+            success = True
 
         self.print_result(
-            "TC3 Logout (Expired/Cleared Session)",
-            "session cleared before logout request",
+            "TC3 Logout (Session Is None)",
+            "request.session=None",
             success
         )
 
-        self.assertIn(response.status_code, [200, 302])
-        
-        self.assertFalse('_auth_user_id' in self.client.session)
+        self.assertTrue(success)
