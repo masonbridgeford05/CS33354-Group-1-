@@ -32,3 +32,8 @@ class GameController:
             except ValueError:
                 print("Error: Invalid game mode")
                 break
+
+        final_score = self.game.getScore()
+        game_id = self.game.getGameID()
+
+        updateLeaderboard(final_score, game_id, user_id)
