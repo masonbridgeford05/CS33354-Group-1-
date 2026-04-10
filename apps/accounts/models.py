@@ -16,10 +16,19 @@ class User(models.Model):
         user.save()
         return user
 
+    # Keeping for tests that are already written, but not used in views
     def checkUserCredentials(userEmail, userPassword):
         try:
             user = User.objects.get(userEmail = userEmail)
-            return check_password(userPassword, user.user_password)
+            return check_password(userPassword, user.userPassword)
         except User.DoesNotExist:
             return False
-
+        
+    def authenticateUser(userEmail, userPassword):
+        try:
+            user = User.objects.get(userEmail=userEmail)
+            if check_password(userPassword, user.userPassword):
+                return user
+        except User.DoesNotExist:
+            pass
+        return None

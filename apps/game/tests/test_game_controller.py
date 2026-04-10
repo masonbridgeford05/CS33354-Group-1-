@@ -21,7 +21,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return "Library"
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getattempts(), 0)
         self.assertEqual(controller.game.getScore(), 3000)
@@ -44,7 +44,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return inputs.pop(0)
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getattempts(), 2)
         self.assertEqual(controller.game.getScore(), 1000)  # (3-2)*1000
@@ -67,7 +67,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return inputs.pop(0)
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getattempts(), 3)
         self.assertEqual(controller.game.getScore(), 0)
@@ -88,7 +88,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return "Library"
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getScore(), 6000)  # (3-0)*2*1000
         print("TC4 Controller Passed")
@@ -109,7 +109,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return inputs.pop(0)
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getattempts(), 0)
         self.assertEqual(len(inputs), 2)  # confirms loop stopped early
@@ -127,7 +127,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return "Library"
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getattempts(), 0)
         print("TC6 Controller Passed")
@@ -146,7 +146,7 @@ class GameControllerTest(TestCase):
         def fake_input(prompt):
             return inputs.pop(0)
 
-        controller.signalGameStart(input_func=fake_input)
+        controller.GameStart(input_func=fake_input)
 
         self.assertEqual(controller.game.getattempts(), 3)
         print("TC7 Controller Passed")

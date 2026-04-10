@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from apps.accounts.models import User
 from apps.accounts.validator import Validator
@@ -10,14 +10,15 @@ class UserController(View):
             return User.createUserAccount(userName, userEmail, userPassword)
         return None
     
-    def loginUser(self, userEmail, userPassword):
-        if User.checkuserCredentials(userEmail, userPassword):
+    def loginUser(self, request, userEmail, userPassword):
+        if User.checkUserCredentials(userEmail, userPassword):
+            request.session["user_id"] = User.objects.get(userEmail=userEmail).userId
             return True
         return False
         
-    def fetchUserData(self, userID):
+    def fetchUserData(self, userId):
         try:
-            return User.objects.get(user_ID = userID)
+            return User.objects.get(userId = userId)
         except User.DoesNotExist:
             return None
     
@@ -42,7 +43,3 @@ class UserController(View):
             request.session.flush()
             return True
         return False
-        
-
-
-
