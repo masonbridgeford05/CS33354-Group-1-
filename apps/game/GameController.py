@@ -36,4 +36,4 @@ class GameController:
         final_score = self.game.getScore()
         game_id = self.game.getGameID()
 
-        updateLeaderboard(final_score, game_id, user_id)
+        ## updateLeaderboard(final_score, gamemode, user_id)
