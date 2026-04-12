@@ -8,7 +8,7 @@ class User(models.Model):
     userId = models.AutoField(primary_key = True)
     userName = models.CharField(max_length = 16)
     userEmail = models.EmailField(unique = True)
-    userPassword = models.CharField(max_length = 32)
+    userPassword = models.CharField(max_length = 128)
 
     def createUserAccount(userName, userEmail, userPassword):
         hashed_password = make_password(userPassword)
@@ -19,7 +19,7 @@ class User(models.Model):
     def checkUserCredentials(userEmail, userPassword):
         try:
             user = User.objects.get(userEmail = userEmail)
-            return check_password(userPassword, user.user_password)
+            return check_password(userPassword, user.userPassword)
         except User.DoesNotExist:
             return False
 
