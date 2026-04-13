@@ -26,6 +26,9 @@ class GameResult(models.Model):
     user_id = models.ForeignKey(User, on_delete = models.CASCADE)
     score = models.IntegerField()
 
+    class Meta:
+        ordering = ['-score']  # highest score first
+
     def __str__(self):
         return f"Game {self.game_result_id} - User {self.user_id} - Score {self.score}"
 
