@@ -1,5 +1,7 @@
 from apps.game.models import GameResult
 
+from apps.leaderboard.models import LeaderboardEntry
+
 class LeaderboardController:
     
     def save_score(self, username, game_instance):
@@ -25,7 +27,13 @@ user_id=username,
         return entry
 
     def get_top_scores(self, limit=10):
-        return GameResult.objects.all()[:limit]
+       # return GameResult.objects.all()[:limit]
+
+
+       return LeaderboardEntry.objects.all()[:limit]
+    
+
+    
 
     def get_top_scores_by_mode(self, gamemode, limit=10):
         return GameResult.objects.filter(gamemode=gamemode)[:limit]
