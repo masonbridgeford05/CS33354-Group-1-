@@ -1,18 +1,20 @@
 from apps.game.GameInstance import GameInstance
+from apps.game.models import GameResult
 from apps.game.Image import genRandomImage
 import random
 
 
 class GameController:
 
-    def __init__(self, gamemode):
+    def __init__(self, gamemode, user_id):
         self.gamemode = gamemode
-        self.game = GameInstance(gamemode, random.randint(10000000, 99999999))
+        self.user_id = user_id
+        self.game = GameInstance(gamemode)
 
     def pick_random_image(self):
         return genRandomImage(self.gamemode)
 
-    def signalGameStart(self, input_func=input):
+    def GameStart(self, input_func=input):
         image_path, answer = self.pick_random_image()
 
         # Game cycle
@@ -32,3 +34,5 @@ class GameController:
             except ValueError:
                 print("Error: Invalid game mode")
                 break
+
+        return GameResult(user_id=self.user_id, score=self.game.getScore())
