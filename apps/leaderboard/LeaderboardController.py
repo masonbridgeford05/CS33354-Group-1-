@@ -3,11 +3,24 @@ from apps.leaderboard.models import LeaderboardEntry
 class LeaderboardController:
     
     def save_score(self, username, game_instance):
+
         entry = LeaderboardEntry.objects.create(
-            username=username,
-            score=game_instance.getScore(),
-            gamemode=game_instance.gamemode,
-            game_id=game_instance.getGameID()
+
+
+
+         #   username=username,
+          #  score=game_instance.getScore(),
+          #  gamemode=game_instance.gamemode,
+           # game_id=game_instance.getGameID()
+
+
+
+user_id=username,
+    score=game_instance.getScore(),
+    gamemode=game_instance.gamemode
+
+
+
         )
         return entry
 
@@ -18,4 +31,7 @@ class LeaderboardController:
         return LeaderboardEntry.objects.filter(gamemode=gamemode)[:limit]
 
     def get_user_scores(self, username):
-        return LeaderboardEntry.objects.filter(username=username)
+
+       # return LeaderboardEntry.objects.filter(username=username)
+
+       return LeaderboardEntry.objects.filter(user_id=username)

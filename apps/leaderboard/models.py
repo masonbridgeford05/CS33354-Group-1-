@@ -10,7 +10,11 @@ class LeaderboardEntry(models.Model):
         ordering = ['-score']  # highest score first
 
     def __str__(self):
-        return f"{self.username} - {self.score}"
+
+      #  return f"{self.username} - {self.score}"
+
+       return f"{self.user_id} - {self.score}"
+
 
 
     
