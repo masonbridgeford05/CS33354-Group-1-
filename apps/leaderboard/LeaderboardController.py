@@ -1,4 +1,3 @@
-from apps.leaderboard.models import LeaderboardEntry
 from apps.game.models import GameResult
 
 class LeaderboardController:
