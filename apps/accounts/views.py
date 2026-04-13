@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -14,15 +14,15 @@ class UserController(View):
         if Validator.isValidEmail(userEmail) and Validator.isValidPassword(userPassword):
             return User.createUserAccount(userName, userEmail, userPassword)
         return None
-
+    
     def loginUser(self, userEmail, userPassword):
-        if User.checkUserCredentials(userEmail, userPassword):  # fixed typo
+        if User.checkuserCredentials(userEmail, userPassword):
             return True
         return False
-
+        
     def fetchUserData(self, userID):
         try:
-            return User.objects.get(userId=userID)  # fixed field name
+            return User.objects.get(user_ID = userID)
         except User.DoesNotExist:
             return None
 
@@ -47,36 +47,7 @@ class UserController(View):
             request.session.flush()
             return True
         return False
+        
 
 
-class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
 
-    class Meta:
-        model = AuthUser
-        fields = ['username', 'email', 'password1', 'password2']
-
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('/')
-    return HttpResponse(status=200)
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
-
-
-def register_view(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    return HttpResponse(status=200)
