@@ -1,17 +1,12 @@
 class GameInstance:
     # Moved gameID to the game object
-    def __init__(self, gamemode, gameID):
+    def __init__(self, gamemode):
         # print("GameInstance Initialize 1\n")
         self.gamemode = gamemode
-        self.gameID = gameID
         self.score = 0
         self.attempts = 0
         # print("GameInstance Initialize 2\n")
         self.valid_modes = ["easy", "hard", 1]
-
-    def getGameID(self):
-        # print("GameInstance getGameID \n")
-        return self.gameID
 
     def getScore(self):
         # print("GameInstance getScore \n")
