@@ -25,12 +25,13 @@ class GameResult(models.Model):
     game_result_id = models.IntegerField(primary_key = True)
     user_id = models.ForeignKey(User, on_delete = models.CASCADE)
     score = models.IntegerField()
+    difficult = models.BooleanField()
 
     class Meta:
         ordering = ['-score']  # highest score first
 
     def __str__(self):
-        return f"Game {self.game_result_id} - User {self.user_id} - Score {self.score}"
+        return f"Game {self.game_result_id} - User {self.user_id} - Score {self.score} - Difficulty {'Hard' if self.difficult else 'Easy'}"
 
 
 
