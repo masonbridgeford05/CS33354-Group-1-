@@ -62,5 +62,6 @@ class GameResult(models.Model):
         return f"Game {self.game_result_id} - User {self.user_id} - Score {self.score}"
 
 
-
+    def getScore(self):
+        return self.score
 
