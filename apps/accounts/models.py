@@ -1,34 +1,34 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 
-# Create your models here.
-#DBMgr
 class User(models.Model):
+    userId = models.AutoField(primary_key=True)
+    userName = models.CharField(max_length=16)
+    userEmail = models.EmailField(unique=True)
+    userPassword = models.CharField(max_length=32)
 
-    userId = models.AutoField(primary_key = True)
-    userName = models.CharField(max_length = 16)
-    userEmail = models.EmailField(unique = True)
-    userPassword = models.CharField(max_length = 32)
-
+    @staticmethod
     def createUserAccount(userName, userEmail, userPassword):
-        hashed_password = make_password(userPassword)
-        user = User(userName = userName, userEmail = userEmail, userPassword = hashed_password)
-        user.save()
-        return user
+        try:
+            user = User.objects.create(
+                userName=userName, 
+                userEmail=userEmail, 
+                userPassword=make_password(userPassword)
+            )
+            return user
+        except Exception:
+            return None
 
-    # Keeping for tests that are already written, but not used in views
-    def checkUserCredentials(userEmail, userPassword):
+    @staticmethod
+    def authenticateUser(identifier, password):
         try:
-            user = User.objects.get(userEmail = userEmail)
-            return check_password(userPassword, user.userPassword)
+            user = User.objects.get(userEmail=identifier)
         except User.DoesNotExist:
-            return False
+            try:
+                user = User.objects.get(userName=identifier)
+            except User.DoesNotExist:
+                return None
         
-    def authenticateUser(userEmail, userPassword):
-        try:
-            user = User.objects.get(userEmail=userEmail)
-            if check_password(userPassword, user.userPassword):
-                return user
-        except User.DoesNotExist:
-            pass
+        if check_password(password, user.userPassword):
+            return user
         return None

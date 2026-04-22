@@ -18,7 +18,7 @@ class ImageTest(TestCase):
         count = GameImage.objects.filter(difficulty=0).count()
         print(f"Images in test DB: {count}")
 
-        controller = GameController(gamemode=0)
+        controller = GameController(gamemode=0, user_id=1)
         image_path, location = controller.pick_random_image()
         
         # Check that a result is returned

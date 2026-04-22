@@ -14,8 +14,10 @@ class GameController:
     def pick_random_image(self):
         return genRandomImage(self.gamemode)
 
-    def GameStart(self, input_func=input):
-        image_path, answer = self.pick_random_image()
+    # Added answer parameter to allow web-based guess verification
+    def GameStart(self, input_func=input, answer=None):
+        if answer is None:
+            image_path, answer = self.pick_random_image()
 
         # Game cycle
 
@@ -34,5 +36,6 @@ class GameController:
             except ValueError:
                 print("Error: Invalid game mode")
                 break
-
-        return GameResult(user_id=self.user_id, score=self.game.getScore())
+        
+        # Return result so it can be saved by the view
+        return GameResult(user_id_id=self.user_id, score=self.game.getScore(), gamemode=self.gamemode)
