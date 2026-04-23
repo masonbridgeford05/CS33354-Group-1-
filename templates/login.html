@@ -1,1 +1,19 @@
-{}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <h1>Log In</h1>
+        
+        <input type="email" class = "figma-input" placeholder="UTD Email">
+        <input type="password" name="password" class = "figma-input"
+        placeholder="Password">
+
+        <button type="submit" class ="btn-primary">Log In</button>
+
+        <div class="footer-links">
+            <a href="{% url register %}">Create Account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
