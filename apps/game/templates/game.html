@@ -1,0 +1,16 @@
+<form method="POST">
+    {% csrf_token %}
+    <h1>CometGrid: Guess the UTD Location</h1>
+    
+    <img src="{{ image_url }}" alt="Where is this?" style="width:400px;">
+
+    <p>Difficulty: 
+        <select name="difficulty">
+            <option value="easy">Easy</option>
+            <option value="hard">Hard</option>
+        </select>
+    </p>
+
+    <input type="text" name="guess" placeholder="Enter building name..." required>
+    <button type="submit">Submit Guess</button>
+</form>

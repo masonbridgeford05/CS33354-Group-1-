@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CometGrid Leaderboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; text-align: center; }
+        .leaderboard-container { width: 60%; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #C45508; } /* UTD Orange */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #154734; color: white; } /* UTD Green */
+        tr:hover { background-color: #f1f1f1; }
+        .rank { font-weight: bold; width: 50px; }
+        .btn-home { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #154734; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="leaderboard-container">
+    <h1>🏆 Global Leaderboard</h1>
+    <p>Top 10 UTD Campus Explorers</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="rank">Rank</th>
+                <th>Player</th>
+                <th>Score</th>
+                <th>Mode</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in leaderboard_data %}
+            <tr>
+                <td class="rank">{{ forloop.counter }}</td>
+                <td>{{ result.user_id__userName }}</td> 
+                <td><strong>{{ result.max_score }}</strong></td> 
+                <td>{{ result.gamemode }}</td>
+            </tr>
+            {% empty %}
+            {# This part only shows if leaderboard_data is empty #}
+            <tr>
+                <td colspan="4" style="text-align:center;">No scores recorded yet. Be the first to play!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'signal_game_start' %}" class="btn-home">Back to Game</a>
+</div>
+
+</body>
+</html>
