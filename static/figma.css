@@ -1,0 +1,54 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    background-color: #A29BFE;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background-color: #FFFFFF;
+    padding: 60px 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+
+h1{
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    font-weight: bold;
+    color: #000;
+}
+
+.description p {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+.btn-start {
+    display: inline-block;
+    margin-top: 40px;
+    background-color: #9A98A4;
+    color: white;
+    text-decoration: none;
+    padding: 12px 0;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn-start:hover {
+    background-color: #7d7b88;
+}

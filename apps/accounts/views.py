@@ -47,6 +47,17 @@ class UserController(View):
             request.session.flush()
             return True
         return False
+    
+    def login_view(request):
+        return render(request, 'login.html')
+    
+    def register_view(request):
+        return render(request, 'createaccount.html')
+    
+    def logout_view(request):
+        controller = UserController()
+        controller.logoutUser(request)
+        return redirect('home')
         
 
 
