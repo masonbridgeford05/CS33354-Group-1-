@@ -54,8 +54,8 @@ class TestLeaderboardController(TestCase):
         self.controller = LeaderboardController()
 
     def test_get_top_scores_returns_10(self):
-        result = self.controller.get_top_scores()
-        self.assertEqual(len(result), 10)
+        top_scores = self.controller.get_top_scores()
+        self.assertEqual(len(top_scores), 10)
 
     
     
