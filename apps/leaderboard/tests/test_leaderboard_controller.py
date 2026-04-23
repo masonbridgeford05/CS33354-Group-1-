@@ -55,7 +55,7 @@ class TestLeaderboardController(TestCase):
         self.controller.save_score("user3", game3)
 
         # Retrieve leaderboard should be sorted
-        top_scores = self.controller.get_top_scores()
+        top_scores = self.controller.get_top_scores(limit=10)
 
         # print section header to better reading on the console
         print("\n=== Top Scores (Highest → Lowest) ===")
