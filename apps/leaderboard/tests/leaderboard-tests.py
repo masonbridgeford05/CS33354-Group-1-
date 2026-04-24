@@ -1,7 +1,7 @@
-from django.test import TestCase
 
-# Old import - commented because this project uses custom User model for GameResult
-# from django.contrib.auth.models import User
+
+
+from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.game.models import GameResult
@@ -11,13 +11,6 @@ from apps.leaderboard.LeaderboardController import LeaderboardController
 class TestLeaderboardController(TestCase):
 
     def setUp(self):
-
-        # this version don't working so I kept it as it's to know
-        # Old Django User creation - commented because create_user does not work with custom User model
-        # self.user1 = User.objects.create_user(username="alice", password="pass123")
-        # self.user2 = User.objects.create_user(username="bob", password="pass456")
-        # self.user3 = User.objects.create_user(username="charlie", password="pass789")
-
         self.user1 = User.objects.create(userName="alice", userEmail="alice@test.com", userPassword="pass123")
         self.user2 = User.objects.create(userName="bob", userEmail="bob@test.com", userPassword="pass456")
         self.user3 = User.objects.create(userName="charlie", userEmail="charlie@test.com", userPassword="pass789")
@@ -56,20 +49,24 @@ class TestLeaderboardController(TestCase):
         self.controller = LeaderboardController()
 
     def test_get_top_scores_returns_10(self):
+        print("Running: check leaderboard returns exactly 10 results")
         top_scores = self.controller.get_top_scores()
         self.assertEqual(len(top_scores), 10)
 
     def test_get_top_scores_highest_score_first(self):
+        print("Running: check highest score is first")
         top_scores = self.controller.get_top_scores()
         self.assertEqual(top_scores[0].score, 9500)
 
     def test_get_top_scores_sorted_descending(self):
+        print("Running: check scores sorted descending")
         top_scores = self.controller.get_top_scores()
 
         for i in range(len(top_scores) - 1):
             self.assertGreaterEqual(top_scores[i].score, top_scores[i + 1].score)
 
     def test_get_top_scores_includes_only_top_10_scores(self):
+        print("Running: check exact top 10 scores list")
         top_scores = self.controller.get_top_scores()
         scores = [game.score for game in top_scores]
 
@@ -78,11 +75,17 @@ class TestLeaderboardController(TestCase):
         self.assertEqual(scores, expected_scores)
 
     def test_get_top_scores_lowest_score_in_top_10(self):
+        print("Running: check lowest score in top 10 is 7200")
         top_scores = self.controller.get_top_scores()
-
-
-         # also i changed this line
-        # Old line - commented because Django QuerySet does not support negative indexing
-        # self.assertEqual(top_scores[-1].score, 7200)
-
         self.assertEqual(top_scores[9].score, 7200)
+
+
+
+
+
+
+
+
+# .venv\Scripts\Activate.ps1
+# python manage.py test apps.leaderboard.tests.leaderboard-tests
+
