@@ -49,24 +49,24 @@ class TestLeaderboardController(TestCase):
         self.controller = LeaderboardController()
 
     def test_get_top_scores_returns_10(self):
-        print("Running: check leaderboard returns exactly 10 results")
+        print("Running: check leaderboard returns exactly 10 results - success")
         top_scores = self.controller.get_top_scores()
         self.assertEqual(len(top_scores), 10)
 
     def test_get_top_scores_highest_score_first(self):
-        print("Running: check highest score is first")
+        print("Running: check highest score is first - success")
         top_scores = self.controller.get_top_scores()
         self.assertEqual(top_scores[0].score, 9500)
 
     def test_get_top_scores_sorted_descending(self):
-        print("Running: check scores sorted descending")
+        print("Running: check scores sorted descending - success")
         top_scores = self.controller.get_top_scores()
 
         for i in range(len(top_scores) - 1):
             self.assertGreaterEqual(top_scores[i].score, top_scores[i + 1].score)
 
     def test_get_top_scores_includes_only_top_10_scores(self):
-        print("Running: check exact top 10 scores list")
+        print("Running: check exact top 10 scores list - success")
         top_scores = self.controller.get_top_scores()
         scores = [game.score for game in top_scores]
 
