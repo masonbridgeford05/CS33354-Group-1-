@@ -1,16 +1,183 @@
-<form method="POST">
-    {% csrf_token %}
-    <h1>CometGrid: Guess the UTD Location</h1>
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Game Container Layout */
+    .game-wrapper {
+        max-width: 600px;
+        margin: 40px auto;
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Header Styling */
+    .game-header {
+        background: #154734; /* UTD Green */
+        color: white;
+        padding: 15px;
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .difficulty-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    /* Game Body */
+    .game-card {
+        background: white;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-radius: 0 0 15px 15px;
+    }
+
+    .image-container {
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        border: 1px solid #eee;
+        background: #f9f9f9;
+    }
+
+    .game-image {
+        width: 100%;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    /* Attempt Tracker */
+    .attempt-container {
+        margin-bottom: 25px;
+    }
+
+    .attempt-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 12px;
+    }
+
+    .dots-flex {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .dot {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 3px solid #C45508; /* UTD Orange */
+        transition: all 0.4s ease;
+    }
+
+    .dot.filled {
+        background: #C45508;
+    }
+
+    /* Feedback Message */
+    .feedback-alert {
+        background: #fff3f3;
+        color: #d9534f;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #f8d7da;
+        font-weight: bold;
+        animation: shake 0.5s ease-in-out;
+    }
+
+    /* Input Styling */
+    .guess-input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+    }
+
+    .guess-input:focus {
+        border-color: #154734;
+    }
+
+    .submit-btn {
+        background: #154734;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+        background: #0d2e22;
+        transform: translateY(-2px);
+    }
+
+    /* Animations */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+</style>
+
+<div class="game-wrapper">
     
-    <img src="{{ image_url }}" alt="Where is this?" style="width:400px;">
+    <div class="game-header">
+        <h2 style="margin:0 0 5px 0;">Where is this?</h2>
+        <span class="difficulty-badge">{{ mode|default:"Easy" }} Mode</span>
+    </div>
 
-    <p>Difficulty: 
-        <select name="difficulty">
-            <option value="easy">Easy</option>
-            <option value="hard">Hard</option>
-        </select>
+    <div class="game-card">
+        
+        <div class="image-container">
+            <img src="{{ image_url }}" alt="Campus Location" class="game-image">
+        </div>
+
+        <div class="attempt-container">
+            <p class="attempt-label">Attempts Used</p>
+            <div class="dots-flex">
+                {% with attempts=request.session.attempts|default:0 %}
+                    <div class="dot {% if attempts >= 1 %}filled{% endif %}"></div>
+                    <div class="dot {% if attempts >= 2 %}filled{% endif %}"></div>
+                    <div class="dot {% if attempts >= 3 %}filled{% endif %}"></div>
+                {% endwith %}
+            </div>
+        </div>
+
+        {% if location_hint %}
+            <div class="feedback-alert">
+                ⚠️ {{ location_hint }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="guess" class="guess-input" 
+                   placeholder="Enter building name..." autofocus required>
+            
+            <button type="submit" class="submit-btn">
+                Submit Guess
+            </button>
+        </form>
+    </div>
+
+    <p style="margin-top: 25px; color: #999; font-size: 0.85rem;">
+        HINT: Use the common name (e.g., "Student Union" or "ECS South").
     </p>
-
-    <input type="text" name="guess" placeholder="Enter building name..." required>
-    <button type="submit">Submit Guess</button>
-</form>
+</div>
+{% endblock %}

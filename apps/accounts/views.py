@@ -3,6 +3,12 @@ from django.views import View
 from apps.accounts.models import User
 from apps.accounts.validator import Validator
 from apps.game.GameController import GameController
+from django.contrib import messages
+from django.contrib.messages import get_messages
+from datetime import date
+from django.db.models import Sum
+from apps.game.models import GameResult
+from apps.accounts.models import User
 
 class UserController(View):
     def loginUser(self, request, username_or_email, userPassword):
@@ -51,41 +57,84 @@ class UserController(View):
         return False
 
 def login_view(request):
-    if request.method == "POST":
-        u_identifier = request.POST.get('username') or request.POST.get('userEmail')
-        u_pass = request.POST.get('password') or request.POST.get('userPassword')
-        
-        controller = UserController()
-        if controller.loginUser(request, u_identifier, u_pass):
-            return redirect('signal_game_start') 
-        
-        print(f"DEBUG: Login failed for {u_identifier}")
+    storage = get_messages(request)
+    for _ in storage:
+        pass
+    if request.method == 'POST':
+        name_input = request.POST.get('userName')
+        pass_input = request.POST.get('userPassword')
+
+        try:
+            # Look for the user in your custom User model
+            user = User.objects.get(userName=name_input)
             
+            # Check if the password matches
+            if user.userPassword == pass_input:
+                request.session['user_id'] = user.userId
+                request.session['user_name'] = user.userName
+                messages.success(request, f"Welcome back, {user.userName}!")
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Incorrect password. Please try again.")
+        
+        except User.DoesNotExist:
+            messages.error(request, "Username not found. Have you registered yet?")
+
     return render(request, 'login.html')
 
 def register_view(request):
-    if request.method == "POST":
-        u_name = request.POST.get('username')
-        u_email = request.POST.get('email')
-        p1 = request.POST.get('password') or request.POST.get('password1') or request.POST.get('userPassword')
-        p2 = request.POST.get('password2')
-        
-        # 1. Check if passwords match
-        if p2 and p1 != p2:
-            return render(request, 'register.html', {'error': 'Passwords do not match'})
+    storage = get_messages(request)
+    for _ in storage:
+        pass
 
-        # 2. Check if username or email already exists
-        if User.objects.filter(userName=u_name).exists() or User.objects.filter(userEmail=u_email).exists():
-            # Return 200 to stay on the page as the test expects
-            return render(request, 'register.html', {'error': 'User already exists'})
+    if request.method == 'POST':
+        email_input = request.POST.get('userEmail')
+        name_input = request.POST.get('userName')
+        pass_input = request.POST.get('userPassword')
 
-        controller = UserController()
-        if controller.createUserAccount(u_name, u_email, p1):
+        if User.objects.filter(userName=name_input).exists():
+            messages.error(request, "That username is already taken.")
+        elif len(pass_input) < 12:
+            messages.error(request, "Password must be at least 12 characters.")
+        else:
+            User.objects.create(
+                userEmail=email_input,
+                userName=name_input,
+                userPassword=pass_input
+            )
+            messages.success(request, "Account created! Please log in.")
             return redirect('login')
-            
+
+        return render(request, 'register.html', {
+            'typed_email': email_input,
+            'typed_name': name_input
+        })
+
     return render(request, 'register.html')
 
 def logout_view(request):
+    storage = get_messages(request)
+    for _ in storage:
+        pass
     controller = UserController()
     controller.logoutUser(request)
     return redirect('login')
+
+def dashboard_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
+    user = User.objects.get(userId=user_id)
+    
+    # Calculate total points
+    total_points = GameResult.objects.filter(user_id=user).aggregate(Sum('score'))['score__sum'] or 0
+    
+    # Check if they played today
+    has_played = GameResult.objects.filter(user_id=user, date_played__date=date.today()).exists()
+
+    return render(request, 'dashboard.html', {
+        'user': user,
+        'total_points': total_points,
+        'has_played': has_played
+    })

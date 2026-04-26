@@ -19,6 +19,7 @@ urlpatterns = [
 
     # Leaderboard Route
     path('leaderboard/', leaderboard_views.show_leaderboard, name='leaderboard'),
+    path('dashboard/', account_views.dashboard_view, name='dashboard'),
 ]
 
 if settings.DEBUG:
