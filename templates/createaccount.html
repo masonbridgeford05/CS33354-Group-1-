@@ -1,1 +1,26 @@
-{% extends "base.html %"}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+   <div class="card">
+       <h1>Create Account</h1>
+       <form method="POST">
+           {% csrf_token %}
+           <div class="input-group">
+               <input type="text" name="username" class="figma-input" placeholder="Full Name" required>
+           </div>
+           <div class="input-group">
+               <input type="email" name="email" class="figma-input" placeholder="UTD Email" required>
+           </div>
+           <div class="input-group">
+                <input type="password" name="password" class="figma-input" placeholder="Password" required>
+           </div>
+        <button type="submit" class="btn-primary">Sign Up</button>
+        </form>
+
+    <div class="footer-links">
+        <p>Already have an account? <a href ="{% url 'login'%}">Log In</a></p>
+    </div>
+   </div>
+</div>
+{% endblock %}
