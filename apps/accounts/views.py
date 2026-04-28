@@ -48,17 +48,23 @@ class UserController(View):
             return True
         return False
     
+    @staticmethod
     def login_view(request):
         return render(request, 'login.html')
     
+    @staticmethod
     def register_view(request):
         return render(request, 'createaccount.html')
     
+    @staticmethod
     def logout_view(request):
         controller = UserController()
         controller.logoutUser(request)
         return redirect('home')
-        
+    
+    @staticmethod
+    def home_view(request):
+        return render(request, 'home.html')
 
 
 

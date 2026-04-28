@@ -52,3 +52,38 @@ h1{
 .btn-start:hover {
     background-color: #7d7b88;
 }
+
+.input-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.figma-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background-color: #9A98A4;
+    color: white;
+    border: none;
+    padding: 14px 0;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #7d7b88;
+}
+
+.footer-links {
+    margin-top: 20px;
+}

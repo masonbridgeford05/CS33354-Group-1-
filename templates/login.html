@@ -4,15 +4,19 @@
 <div class="container">
     <div class="card">
         <h1>Log In</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="email" name="username" class = "figma-input" placeholder="UTD Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" class="figma-input" placeholder="Password" required>
+            </div>
+            <button type="submit" class ="btn-primary">Log In</button>
+        </form>
         
-        <input type="email" class = "figma-input" placeholder="UTD Email">
-        <input type="password" name="password" class = "figma-input"
-        placeholder="Password">
-
-        <button type="submit" class ="btn-primary">Log In</button>
-
         <div class="footer-links">
-            <a href="{% url register %}">Create Account</a>
+            <a href="{% url 'register' %}">Create Account</a>
         </div>
     </div>
 </div>
