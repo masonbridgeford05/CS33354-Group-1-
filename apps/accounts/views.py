@@ -91,8 +91,9 @@ def register_view(request):
         email_input = request.POST.get('userEmail')
         name_input = request.POST.get('userName')
         pass_input = request.POST.get('userPassword')
-
-        if User.objects.filter(userName=name_input).exists():
+        if User.objects.filter(userEmail=email_input).exists():
+            messages.error(request, "An account with this email already exists.")
+        elif User.objects.filter(userName=name_input).exists():
             messages.error(request, "That username is already taken.")
         elif len(pass_input) < 12:
             messages.error(request, "Password must be at least 12 characters.")

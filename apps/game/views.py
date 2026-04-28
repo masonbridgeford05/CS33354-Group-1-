@@ -55,58 +55,46 @@ def signal_game_start(request):
         request.session['attempts'] += 1
         current_attempts = request.session['attempts']
         
-        mode_input = request.POST.get('difficulty') or request.session.get('game_mode') or 'easy'
-        mode_val = 0 if mode_input == 'easy' else 1
+        mode = request.session.get('game_mode', 'easy')
+        mode_val = 0 if mode == 'easy' else 1
         
         game_controller = GameController(mode_val, user_id)
         game_result = game_controller.GameStart(input_func=lambda x: user_guess, answer=answer)
 
-        #Correct Guess
+        # --- CASE 1: Correct Guess ---
         if game_result.score > 0:
-        # Determine base points based on attempts
-            if current_attempts == 1: 
-                base_score = 3000
-            elif current_attempts == 2: 
-                base_score = 2000
-            elif current_attempts == 3: 
-                base_score = 1000
-            else:
-                base_score = 0
-
-        mode = request.session.get('game_mode', 'easy')
-        multiplier = 2 if mode == 'hard' else 1
-
-        if game_result.score > 0:
-            # Calculate weighted score
+            multiplier = 2 if mode == 'hard' else 1
             base_points = {1: 3000, 2: 2000, 3: 1000}.get(current_attempts, 0)
             final_score = base_points * multiplier
             
-            # Save the result
             user_obj = User.objects.get(userId=user_id)
-            GameResult.objects.create(
-                user_id=user_obj, 
-                score=final_score, 
-                gamemode=mode
-            )
+            GameResult.objects.create(user_id=user_obj, score=final_score, gamemode=mode)
 
-            messages.success(request, f"Correct! You earned {final_score} points on {mode.upper()} mode!")
+            # Cleanup
+            request.session['attempts'] = 0
+            if 'game_answer' in request.session: del request.session['game_answer']
+
+            messages.success(request, f"Correct! You earned {final_score} points!")
             return redirect('dashboard')
         
-        # Incorrect Guess
+        # --- CASE 2: Incorrect Guess ---
         else:
             if current_attempts >= 3:
                 user_obj = User.objects.get(userId=user_id)
-                GameResult.objects.create(user_id=user_obj, score=0, gamemode=mode_input)
+                GameResult.objects.create(user_id=user_obj, score=0, gamemode=mode)
                 
+                # Cleanup
                 request.session['attempts'] = 0
                 if 'game_answer' in request.session: del request.session['game_answer']
                 
-                messages.info(request, "Out of attempts! Better luck tomorrow.")
+                # ONLY ONE message call here to prevent duplicates
+                messages.error(request, "Out of attempts! Better luck tomorrow.")
                 return redirect('dashboard')
             
+            # Still have tries left - no redirect, just re-render
             return render(request, 'game.html', {
                 'image_url': request.session.get('current_image_url'),
-                'enlarge_image': True, 
+                'mode': mode,
                 'location_hint': f"Incorrect. Attempt {current_attempts}/3. Try again!"
             })
 
