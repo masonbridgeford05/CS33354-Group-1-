@@ -16,11 +16,40 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from apps.accounts.views import login_view, logout_view, register_view
+
+
+
+
+# from apps.accounts.views import login_view, logout_view, register_view
+
+from apps.accounts.views import UserController
+
+
+
+
+
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
-    path('register/', register_view, name='register'),
+
+    # I changed these lines also
+# Switched from function-based views to UserController (class-based view).
+# This aligns with the current project structure where user logic is handled inside the controller.
+# Old routes are kept commented for reference.
+
+    #path('admin/', admin.site.urls),
+    #path('login/', login_view, name='login'),
+    #path('logout/', logout_view, name='logout'),
+    #path('register/', register_view, name='register'),
+
+
+
+
+
+path('login/', UserController.as_view(), name='login'),
+path('logout/', UserController.as_view(), name='logout'),
+path('register/', UserController.as_view(), name='register'),
+
+
+
 ]
