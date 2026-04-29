@@ -18,12 +18,34 @@ class UserController(View):
         if user is not None:
             login(request, user)
             return render(request, 'home.html');
-        else:
-            # error here
+class UserController(View):                                                                                             
+      def login_view(request):                                                                                          
+          if request.method == 'POST':                                                                                    
+              username = request.POST["username"]                                                                         
+              password = request.POST["password"]                                                                         
+              user = authenticate(request, username=username, password=password)                                          
+          if user is not None:
+              login(request, user)                                                                                        
+              return render(request, 'home.html')                                                                         
+          else:
+              pass  # error here                                                                                          
+                                                                                                                        
+      def register_view(request):
+          if request.method == 'POST':
+              pass                                                                                                        
+          return render(request, 'createaccount.html')
+                                                                                                                          
+      def home_view(request):                                                                                           
+          return render(request, 'home.html')
+      def logout_view(request):
+          logout(request)
+          return redirect('home')                                                                                         
+  
+      def create_account_view(request):                                                                                   
+          if request.method == 'POST':                                                                                  
+              pass
 
-    def create_account_view(request): 
-        if request.method == 'POST':
-            
+
 
 # class UserController(View):
 #     def createUserAccount(self, userName, userEmail, userPassword):

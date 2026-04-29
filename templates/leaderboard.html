@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+   <div class="card" style="width: 400px;">
+       <h1>Leaderboard</h1>
+       <table style="width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 30px;">
+           <thead>
+               <tr style="border-bottom: 2px solid #eee;">
+                   <th style="text-align: left; padding: 10px 8px; font-size: 0.9rem; color: #555;">Rank</th>
+                   <th style="text-align: left; padding: 10px 8px; font-size: 0.9rem; color: #555;">User</th>
+                   <th style="text-align: right; padding: 10px 8px; font-size: 0.9rem; color: #555;">Score</th>
+               </tr>
+           </thead>
+           <tbody>
+               {% for entry in leaderboard %}
+               <tr style="border-bottom: 1px solid #f0f0f0;">
+                   <td style="padding: 12px 8px; font-size: 0.95rem;">{{ forloop.counter }}</td>
+                   <td style="padding: 12px 8px; font-size: 0.95rem;">{{ entry.username }}</td>
+                   <td style="padding: 12px 8px; font-size: 0.95rem; text-align: right; font-weight: bold;">{{ entry.score }}</td>
+               </tr>
+               {% empty %}
+               <tr>
+                   <td colspan="3" style="padding: 20px 8px; text-align: center; color: #888;">No scores yet.</td>
+               </tr>
+               {% endfor %}
+           </tbody>
+       </table>
+       <a href="#" class="btn-start" style="background-color: #ccc; color: #333;">Back to Dashboard</a>
+   </div>
+</div>
+{% endblock %}
+
+
+
