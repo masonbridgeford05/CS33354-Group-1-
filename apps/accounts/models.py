@@ -1,23 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import check_password
 
 # Create your models here.
 #DBMgr
 class User(AbstractBaseUser):
 
     userId = models.AutoField(primary_key = True)
-    userName = models.CharField(max_length = 16)
+    username = models.CharField(max_length = 16)
     userEmail = models.EmailField(unique = True)
-    userPassword = models.CharField(max_length = 128)
 
     USERNAME_FIELD = 'userEmail'
-    REQUIRED_FIELDS = ['userName']
+    REQUIRED_FIELDS = ['username']
 
     @staticmethod
-    def createUserAccount(userName, userEmail, userPassword):
-        hashed_password = make_password(userPassword)
-        user = User(userName = userName, userEmail = userEmail, userPassword = hashed_password)
+    def createUserAccount(username, userEmail, userPassword):
+        user = User(username = username, userEmail = userEmail)
+        user.set_password(userPassword)
         user.save()
         return user
 
@@ -26,7 +25,7 @@ class User(AbstractBaseUser):
     def checkUserCredentials(userEmail, userPassword):
         try:
             user = User.objects.get(userEmail = userEmail)
-            return check_password(userPassword, user.userPassword)
+            return user.check_password(userPassword)
         except User.DoesNotExist:
             return False
         
@@ -34,7 +33,7 @@ class User(AbstractBaseUser):
     def authenticateUser(userEmail, userPassword):
         try:
             user = User.objects.get(userEmail=userEmail)
-            if check_password(userPassword, user.userPassword):
+            if user.check_password(userPassword):
                 return user
         except User.DoesNotExist:
             pass
