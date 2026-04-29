@@ -20,8 +20,15 @@ from apps.accounts.views import UserController
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('', UserController.home_view, name='home'),
+    
     path('login/', UserController.login_view, name='login'),
     path('logout/', UserController.logout_view, name='logout'),
     path('register/', UserController.register_view, name='register'),
+
+    path('playgame/start/', game_views.signal_game_start, name='signal_game_start'),
+
+    path('leaderboard/', leaderboard_views.show_leaderboard, name='leaderboard'),
+    path('dashboard/', account_views.dashboard_view, name='dashboard'),
 ]

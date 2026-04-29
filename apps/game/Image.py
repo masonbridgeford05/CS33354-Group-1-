@@ -13,4 +13,3 @@ def genRandomImage(mode):
         return None, None
 
     return random_image.image_path, random_image.location
-
