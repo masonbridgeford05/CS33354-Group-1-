@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 from apps.accounts import views as account_views
 from apps.game import views as game_views
 from apps.leaderboard import views as leaderboard_views # Added this
@@ -7,6 +8,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='login/', permanent=False), name='home'),
     path('admin/', admin.site.urls),
     
     # Accounts Routes
