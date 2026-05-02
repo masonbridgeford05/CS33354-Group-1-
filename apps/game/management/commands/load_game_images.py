@@ -3,6 +3,7 @@ from django.core.files.base import ContentFile
 from pathlib import Path
 from apps.game.models import GameImage
 import os
+import re
 
 class Command(BaseCommand):
     help = 'Load images from Easy and Hard subdirectories into the database'
@@ -55,8 +56,9 @@ class Command(BaseCommand):
             self.stdout.write(f'\nProcessing {difficulty.upper()} images...')
 
             for image_file in image_files:
-                # Use filename without extension as location name
-                location_name = image_file.stem
+                # Trim _img# suffix from filename to get location name
+                # e.g. paris_img1.jpg -> "paris", new_york_img12.png -> "new_york"
+                location_name = re.sub(r'_img\d+$', '', image_file.stem)
                 
                 # Check if image already exists
                 if GameImage.objects.filter(location=location_name, difficulty=difficulty).exists():

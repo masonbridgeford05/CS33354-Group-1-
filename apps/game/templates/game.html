@@ -93,19 +93,26 @@
     }
 
     /* Input Styling */
-    .guess-input {
+    .building-select {
         width: 100%;
         padding: 15px;
         border: 2px solid #ddd;
-        border-radius: 10px;
+        border-radius: 8px;
         font-size: 1rem;
         outline: none;
         transition: border-color 0.3s;
         box-sizing: border-box;
+        background: white;
+        cursor: pointer;
     }
 
-    .guess-input:focus {
+    .building-select:focus {
         border-color: #154734;
+        box-shadow: 0 0 0 3px rgba(21, 71, 52, 0.1);
+    }
+
+    .building-select option {
+        padding: 10px;
     }
 
     .submit-btn {
@@ -167,8 +174,13 @@
 
         <form method="POST">
             {% csrf_token %}
-            <input type="text" name="guess" class="guess-input" 
-                   placeholder="Enter building name..." autofocus required>
+            
+            <select name="answer" class="building-select" required>
+                <option value="">-- Select a building --</option>
+                {% for building in buildings %}
+                    <option value="{{ building }}">{{ building }}</option>
+                {% endfor %}
+            </select>
             
             <button type="submit" class="submit-btn">
                 Submit Guess
@@ -177,7 +189,8 @@
     </div>
 
     <p style="margin-top: 25px; color: #999; font-size: 0.85rem;">
-        HINT: Use the common name (e.g., "Student Union" or "ECS South").
+        Select the correct campus building from the options above.
     </p>
+
 </div>
 {% endblock %}

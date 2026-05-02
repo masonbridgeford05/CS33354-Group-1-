@@ -4,6 +4,7 @@ from apps.game.GameController import GameController
 from apps.game.models import GameResult, GameImage 
 from apps.accounts.models import User
 from apps.leaderboard.LeaderboardController import LeaderboardController
+from apps.game.buildings import CAMPUS_BUILDINGS
 from datetime import date
 from django.contrib import messages
 
@@ -45,11 +46,12 @@ def signal_game_start(request):
         
         return render(request, 'game.html', {
             'image_url': random_image.image_path.url,
-            'mode': selected_mode
+            'mode': selected_mode,
+            'buildings': sorted(CAMPUS_BUILDINGS)
         })
 
     if request.method == "POST":
-        user_guess = request.POST.get('guess')
+        user_guess = request.POST.get('answer')
         answer = request.session.get('game_answer')
         
         request.session['attempts'] += 1
@@ -91,11 +93,14 @@ def signal_game_start(request):
                 messages.error(request, "Out of attempts! Better luck tomorrow.")
                 return redirect('dashboard')
             
-            # Still have tries left - no redirect, just re-render
+            # Still have tries left - regenerate options and re-render
+            correct_answer = answer
+            
             return render(request, 'game.html', {
                 'image_url': request.session.get('current_image_url'),
                 'mode': mode,
-                'location_hint': f"Incorrect. Attempt {current_attempts}/3. Try again!"
+                'location_hint': f"Incorrect. Attempt {current_attempts}/3. Try again!",
+                'buildings': sorted(CAMPUS_BUILDINGS)
             })
 
     all_images = GameImage.objects.all()
