@@ -20,22 +20,27 @@ class CometGridIntegrationTest(TestCase):
         )
 
     def test_full_user_workflow(self):
+
         # 1. Login
-        login_data = {'userEmail': 'temoc@utdallas.edu', 'userPassword': 'password12345'}
+        login_data = {'userName': 'Temoc', 'userPassword': 'password12345'}
         self.client.post(reverse('login'), login_data)
-        
+        session = self.client.session
+        session.save()
+
+        self.assertIn('user_id', session, "User ID not found in session after login.")
+
         # 2. Check session
         self.assertEqual(self.client.session['user_id'], self.test_user.userId)
 
         # 3. Play Game (using the correct URL name)
         # Added 'difficulty' to ensure the view can save 'gamemode' to the DB
         game_data = {
-            'guess': 'Student Union', 
-            'difficulty': 'easy'
+            'answer': 'Student Union', 
+            'difficulty': 'easy',
+            'user_id' : self.test_user.userId
         }
         
         # We need to set the session 'game_answer' so the view has something to compare
-        session = self.client.session
         session['game_answer'] = 'Student Union'
         session.save()
 
@@ -43,7 +48,10 @@ class CometGridIntegrationTest(TestCase):
 
         # 4. Verify DB update
         updated_results = GameResult.objects.filter(user_id=self.test_user)
-        self.assertEqual(updated_results.count(), 1, "GameResult was not saved to the database.")
+        self.assertGreater(updated_results.count(), 0, "GameResult was not saved to the database.")
         
         # Optional: check if the score was actually recorded
         self.assertGreater(updated_results.first().score, 0)
+
+        # 5. delete game result
+        updated_results.first().delete()

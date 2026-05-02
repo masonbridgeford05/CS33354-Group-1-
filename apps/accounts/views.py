@@ -5,6 +5,7 @@ from apps.accounts.validator import Validator
 from apps.game.GameController import GameController
 from django.contrib import messages
 from django.contrib.messages import get_messages
+from django.contrib.auth.hashers import check_password
 from datetime import date
 from django.db.models import Sum
 from apps.game.models import GameResult
@@ -69,7 +70,7 @@ def login_view(request):
             user = User.objects.get(userName=name_input)
             
             # Check if the password matches
-            if user.userPassword == pass_input:
+            if check_password(pass_input, user.userPassword):
                 request.session['user_id'] = user.userId
                 request.session['user_name'] = user.userName
                 messages.success(request, f"Welcome back, {user.userName}!")

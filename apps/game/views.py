@@ -70,7 +70,7 @@ def signal_game_start(request):
             final_score = base_points * multiplier
             
             user_obj = User.objects.get(userId=user_id)
-            GameResult.objects.create(user_id=user_obj, score=final_score, gamemode=mode)
+            record = GameResult.objects.create(user_id=user_obj, score=final_score, gamemode=mode)
 
             # Cleanup
             request.session['attempts'] = 0
@@ -83,8 +83,8 @@ def signal_game_start(request):
         else:
             if current_attempts >= 3:
                 user_obj = User.objects.get(userId=user_id)
-                GameResult.objects.create(user_id=user_obj, score=0, gamemode=mode)
-                
+                record = GameResult.objects.create(user_id=user_obj, score=0, gamemode=mode)
+
                 # Cleanup
                 request.session['attempts'] = 0
                 if 'game_answer' in request.session: del request.session['game_answer']
