@@ -101,11 +101,15 @@ def register_view(request):
         elif len(pass_input) < 12:
             messages.error(request, "Password must be at least 12 characters.")
         else:
-            User.objects.create(
-                userEmail=email_input,
-                userName=name_input,
-                userPassword=pass_input
-            )
+            user = User.createUserAccount(name_input, email_input, pass_input)
+            user.save()
+            
+            #User.objects.create(
+            #    userEmail=email_input,
+            #    userName=name_input,
+            #    userPassword=pass_input
+            #)
+            #
             messages.success(request, "Account created! Please log in.")
             return redirect('login')
 

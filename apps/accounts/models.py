@@ -5,15 +5,15 @@ class User(models.Model):
     userId = models.AutoField(primary_key=True)
     userName = models.CharField(max_length=16)
     userEmail = models.EmailField(unique=True)
-    userPassword = models.CharField(max_length=32)
+    userPassword = models.CharField(max_length=256)
 
     @staticmethod
-    def createUserAccount(userName, userEmail, userPassword):
+    def createUserAccount(userName, userEmail, userpass):
         try:
             user = User.objects.create(
                 userName=userName, 
                 userEmail=userEmail, 
-                userPassword=make_password(userPassword)
+                userPassword=make_password(userpass)
             )
             return user
         except Exception:
