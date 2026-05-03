@@ -4,7 +4,7 @@
 
 This is a python web game designed to 
 
-**How to Run Tests**
+**Set Up**
 
 1. Clone the Phase 5 Repository
 2. Open the folder in your prefered IDE and run setup.bat This will automatically install all the python libraries into a virtual environment.
@@ -15,5 +15,11 @@ This is a python web game designed to
       * MAC run 'source .venv/bin/activate'
 6. Enter 'python manage.py migrate' in terminal to set up the databases
 7. Run 'python manage.py load_game_images' in the command line to load all the game images into the database
-8. Now run 'python manage.py test apps/game' to run testcases for game functionality
-9. Run 'python manage.py test apps/accounts' to run testcases for account functionality
+8. Start the website by running 'python manage.py runserver' in the terminal and visit 127.0.0.1 in your prefered browser
+
+**How to Run Tests**
+9. Now run 'python manage.py test apps/game' to run testcases for game functionality
+10. Run 'python manage.py test apps/accounts' to run testcases for account functionality
+10. Run 'python manage.py test apps/leaderboard' to run testcases for leaderboard functionality
+
+
