@@ -2,7 +2,7 @@
 
 **Comet Grid**
 
-This is a python web game designed to 
+This is a python web game designed to test students' knowledge of the buildings on the UTD campus. Each day, users can log in and try to identify a featured building from an image by selecting its name from a dropdown menu. Players have up to three attempts per round, earning more points for correct answers in fewer guesses, with points being doubled for playing on hard mode. A leaderboard tracks and displays the top-performing students based on their cumulative scores.
 
 **Set Up**
 
