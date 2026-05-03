@@ -8,11 +8,8 @@ class CometGridIntegrationTest(TestCase):
     def setUp(self):
         self.client = Client()
         # Use our custom creation logic
-        self.test_user = User.createUserAccount(
-            userName="Temoc", 
-            userEmail="temoc@utdallas.edu", 
-            userPassword="password12345"
-        )
+        self.test_user = User.createUserAccount("Temoc", "temoc@utdallas.edu", "password12345")
+        self.test_user.save()
         self.test_image = GameImage.objects.create(
             location="Student Union", 
             difficulty=0, 
