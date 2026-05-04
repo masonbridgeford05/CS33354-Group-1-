@@ -18,8 +18,9 @@ This is a python web game designed to test students' knowledge of the buildings 
 8. Start the website by running 'python manage.py runserver' in the terminal and visit 127.0.0.1 in your prefered browser
 
 **How to Run Tests**
-9. Now run 'python manage.py test apps/game' to run testcases for game functionality
-10. Run 'python manage.py test apps/accounts' to run testcases for account functionality
-10. Run 'python manage.py test apps/leaderboard' to run testcases for leaderboard functionality
+9. Now run 'python manage.py test apps.game' to run testcases for game functionality
+10. Run 'python manage.py test apps.accounts' to run testcases for account functionality
+10. Run 'python manage.py test apps.leaderboard.tests' to run testcases for leaderboard functionality\
+
 
 
